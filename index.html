@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sanjukta Biswas — AI & Medical Imaging Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #050b14;
+    --surface: #0c1628;
+    --card: #0f1f38;
+    --cyan: #00e5ff;
+    --violet: #b84fff;
+    --coral: #ff6b6b;
+    --lime: #aaff5c;
+    --gold: #ffd166;
+    --text: #e8f4f8;
+    --muted: #7a9bb5;
+    --border: rgba(0,229,255,0.15);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0; opacity: 0.5;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 4rem;
+    background: rgba(5,11,20,0.85);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 1rem; color: var(--cyan); letter-spacing: 0.08em;
+  }
+  .nav-logo span { color: var(--violet); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none;
+    font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--cyan); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 8rem 4rem 4rem;
+    position: relative; overflow: hidden;
+  }
+
+  .hero-grid-bg {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  }
+
+  .hero-orb {
+    position: absolute;
+    border-radius: 50%; filter: blur(80px); pointer-events: none;
+  }
+  .orb-1 { width: 500px; height: 500px; background: rgba(0,229,255,0.08); top: -100px; right: -100px; }
+  .orb-2 { width: 400px; height: 400px; background: rgba(184,79,255,0.07); bottom: -50px; left: -80px; }
+  .orb-3 { width: 300px; height: 300px; background: rgba(255,107,107,0.06); top: 40%; left: 40%; }
+
+  .hero-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem; color: var(--cyan);
+    letter-spacing: 0.18em; text-transform: uppercase;
+    margin-bottom: 1.2rem;
+    opacity: 0; animation: fadeUp 0.6s 0.1s forwards;
+  }
+
+  .hero-name {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    font-weight: 800; line-height: 0.95;
+    letter-spacing: -0.03em;
+    opacity: 0; animation: fadeUp 0.7s 0.25s forwards;
+  }
+  .hero-name .accent { color: var(--cyan); }
+  .hero-name .accent2 { color: var(--violet); }
+
+  .hero-tagline {
+    margin-top: 1.8rem;
+    font-size: clamp(1rem, 2vw, 1.35rem);
+    color: var(--muted); font-weight: 300; max-width: 560px;
+    line-height: 1.65;
+    opacity: 0; animation: fadeUp 0.7s 0.4s forwards;
+  }
+  .hero-tagline strong { color: var(--text); font-weight: 500; }
+
+  .hero-pills {
+    display: flex; flex-wrap: wrap; gap: 0.6rem;
+    margin-top: 2rem;
+    opacity: 0; animation: fadeUp 0.7s 0.55s forwards;
+  }
+  .pill {
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    font-size: 0.78rem; font-weight: 500; letter-spacing: 0.04em;
+    border: 1px solid;
+  }
+  .pill-cyan  { border-color: var(--cyan);   color: var(--cyan);   background: rgba(0,229,255,0.07); }
+  .pill-violet{ border-color: var(--violet); color: var(--violet); background: rgba(184,79,255,0.07); }
+  .pill-coral { border-color: var(--coral);  color: var(--coral);  background: rgba(255,107,107,0.07);}
+  .pill-lime  { border-color: var(--lime);   color: var(--lime);   background: rgba(170,255,92,0.07); }
+  .pill-gold  { border-color: var(--gold);   color: var(--gold);   background: rgba(255,209,102,0.07);}
+
+  .hero-cta {
+    display: flex; gap: 1rem; margin-top: 2.8rem;
+    opacity: 0; animation: fadeUp 0.7s 0.7s forwards;
+  }
+  .btn {
+    padding: 0.75rem 2rem; border-radius: 6px;
+    font-family: 'Space Mono', monospace; font-size: 0.82rem;
+    letter-spacing: 0.05em; cursor: pointer; text-decoration: none;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--cyan); color: #050b14; border: none;
+    font-weight: 700;
+  }
+  .btn-primary:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,229,255,0.35); }
+  .btn-outline {
+    background: transparent; color: var(--text);
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .btn-outline:hover { border-color: var(--violet); color: var(--violet); transform: translateY(-2px); }
+
+  /* ── SECTION BASE ── */
+  section { padding: 6rem 4rem; position: relative; }
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem; color: var(--cyan);
+    letter-spacing: 0.2em; text-transform: uppercase;
+    margin-bottom: 0.8rem;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800; line-height: 1.1;
+    margin-bottom: 3rem;
+  }
+
+  /* ── SKILLS ── */
+  #skills { background: var(--surface); }
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+  .skill-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.8rem;
+    transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+    position: relative; overflow: hidden;
+  }
+  .skill-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--accent-color, var(--cyan));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .skill-card:hover { transform: translateY(-5px); border-color: rgba(0,229,255,0.3); box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
+  .skill-card:hover::before { transform: scaleX(1); }
+  .skill-card-icon { font-size: 2rem; margin-bottom: 1rem; }
+  .skill-card-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 0.8rem; }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
+  .skill-tag {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 4px; padding: 0.2rem 0.6rem;
+    font-size: 0.72rem; color: var(--muted);
+  }
+
+  /* ── EXPERIENCE ── */
+  #experience { background: var(--bg); }
+  .timeline { position: relative; padding-left: 2rem; }
+  .timeline::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--cyan), var(--violet), var(--coral));
+  }
+  .timeline-item {
+    position: relative; margin-bottom: 3rem; padding-left: 2rem;
+  }
+  .timeline-dot {
+    position: absolute; left: -2.45rem; top: 0.35rem;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--cyan); box-shadow: 0 0 12px var(--cyan);
+    border: 2px solid var(--bg);
+  }
+  .timeline-date {
+    font-family: 'Space Mono', monospace; font-size: 0.75rem;
+    color: var(--cyan); margin-bottom: 0.4rem;
+  }
+  .timeline-role {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.2rem;
+    margin-bottom: 0.2rem;
+  }
+  .timeline-company { color: var(--muted); font-size: 0.9rem; margin-bottom: 1rem; }
+  .timeline-bullets { list-style: none; }
+  .timeline-bullets li {
+    padding: 0.3rem 0; padding-left: 1.2rem; position: relative;
+    color: var(--muted); font-size: 0.9rem; line-height: 1.6;
+  }
+  .timeline-bullets li::before {
+    content: '▸'; position: absolute; left: 0; color: var(--violet);
+  }
+
+  /* ── PROJECTS ── */
+  #projects { background: var(--surface); }
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  .project-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 2rem;
+    transition: transform 0.25s, box-shadow 0.25s;
+    display: flex; flex-direction: column;
+  }
+  .project-card:hover { transform: translateY(-6px); box-shadow: 0 24px 60px rgba(0,0,0,0.5); border-color: rgba(184,79,255,0.3); }
+  .project-emoji { font-size: 2.2rem; margin-bottom: 1rem; }
+  .project-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.6rem; }
+  .project-desc { color: var(--muted); font-size: 0.88rem; line-height: 1.65; flex: 1; }
+  .project-stack { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1.2rem; }
+  .stack-tag {
+    background: rgba(184,79,255,0.12); border: 1px solid rgba(184,79,255,0.25);
+    border-radius: 4px; padding: 0.2rem 0.65rem;
+    font-size: 0.7rem; color: var(--violet); font-family: 'Space Mono', monospace;
+  }
+  .project-link {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    margin-top: 1.2rem; color: var(--cyan); text-decoration: none;
+    font-size: 0.82rem; font-family: 'Space Mono', monospace;
+    transition: gap 0.2s;
+  }
+  .project-link:hover { gap: 0.7rem; }
+
+  /* ── PATENTS ── */
+  #patents { background: var(--bg); }
+  .patents-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+  .patent-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 2rem;
+    position: relative; overflow: hidden;
+  }
+  .patent-card::after {
+    content: ''; position: absolute; top: -40px; right: -40px;
+    width: 100px; height: 100px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,209,102,0.12), transparent 70%);
+  }
+  .patent-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--gold), #ff9f1c);
+    color: #050b14; font-weight: 700; font-size: 0.7rem;
+    padding: 0.25rem 0.7rem; border-radius: 4px;
+    font-family: 'Space Mono', monospace; letter-spacing: 0.06em;
+    margin-bottom: 1rem;
+  }
+  .patent-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; }
+  .patent-desc { color: var(--muted); font-size: 0.85rem; line-height: 1.6; }
+
+  /* ── AWARD ── */
+  .award-banner {
+    background: linear-gradient(135deg, rgba(0,229,255,0.08), rgba(184,79,255,0.08));
+    border: 1px solid rgba(0,229,255,0.2);
+    border-radius: 16px; padding: 2.5rem;
+    display: flex; align-items: center; gap: 2rem;
+    margin-bottom: 3rem;
+  }
+  .award-icon { font-size: 3rem; }
+  .award-text h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.2rem; margin-bottom: 0.4rem; }
+  .award-text p { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+
+  /* ── CONTACT ── */
+  #contact {
+    background: var(--surface);
+    text-align: center;
+  }
+  .contact-inner { max-width: 600px; margin: 0 auto; }
+  .contact-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-top: 2.5rem; }
+  .contact-link {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px; text-decoration: none;
+    font-size: 0.85rem; font-family: 'Space Mono', monospace;
+    border: 1px solid var(--border); color: var(--text);
+    transition: all 0.2s;
+  }
+  .contact-link:hover { border-color: var(--cyan); color: var(--cyan); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,229,255,0.15); }
+  .contact-link svg { width: 16px; height: 16px; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center; padding: 2rem;
+    font-family: 'Space Mono', monospace; font-size: 0.72rem;
+    color: rgba(122,155,181,0.5);
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    #hero, section { padding-left: 1.5rem; padding-right: 1.5rem; }
+    #hero { padding-top: 7rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">SB<span>.</span>dev</div>
+  <ul class="nav-links">
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#patents">Recognition</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="orb-1 hero-orb"></div>
+  <div class="orb-2 hero-orb"></div>
+  <div class="orb-3 hero-orb"></div>
+
+  <p class="hero-eyebrow">// Deep Learning × Medical Imaging × Clinical AI</p>
+  <h1 class="hero-name">
+    Sanjukta<br/>
+    <span class="accent">Bis</span><span class="accent2">was</span>
+  </h1>
+  <p class="hero-tagline">
+    <strong>Teaching machines to see what matters most.</strong><br/>
+    MSE Biomedical Engineering @ Johns Hopkins · Former Senior SWE @ Samsung Research.
+    I build AI systems where rigorous research meets production-grade engineering.
+  </p>
+  <div class="hero-pills">
+    <span class="pill pill-cyan">Medical Imaging</span>
+    <span class="pill pill-violet">Deep Learning</span>
+    <span class="pill pill-coral">Computer Vision</span>
+    <span class="pill pill-lime">LLM Systems</span>
+    <span class="pill pill-gold">Software Engineering</span>
+  </div>
+  <div class="hero-cta">
+    <a href="#projects" class="btn btn-primary">View Projects</a>
+    <a href="mailto:sbsanjukta2000@gmail.com" class="btn btn-outline">Get in Touch</a>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <p class="section-label reveal">// Capabilities</p>
+  <h2 class="section-title reveal">Technical Skills</h2>
+  <div class="skills-grid">
+    <div class="skill-card reveal" style="--accent-color: var(--cyan)">
+      <div class="skill-card-icon">🧠</div>
+      <div class="skill-card-title">Deep Learning & AI</div>
+      <p style="color:var(--muted);font-size:0.85rem">CNNs, Transformers, Transfer Learning, Generative Models, Diffusion Models, LLMs</p>
+      <div class="skill-tags">
+        <span class="skill-tag">PyTorch</span>
+        <span class="skill-tag">TensorFlow</span>
+        <span class="skill-tag">JAX</span>
+        <span class="skill-tag">Scikit-learn</span>
+        <span class="skill-tag">DSPy</span>
+        <span class="skill-tag">RAG</span>
+      </div>
+    </div>
+    <div class="skill-card reveal" style="--accent-color: var(--violet)">
+      <div class="skill-card-icon">🔬</div>
+      <div class="skill-card-title">Medical Imaging</div>
+      <p style="color:var(--muted);font-size:0.85rem">3D volumetric analysis, multi-modal registration, clinical data pipelines</p>
+      <div class="skill-tags">
+        <span class="skill-tag">MRI Analysis</span>
+        <span class="skill-tag">CT Segmentation</span>
+        <span class="skill-tag">DICOM</span>
+        <span class="skill-tag">SimpleITK</span>
+        <span class="skill-tag">3D Volumes</span>
+      </div>
+    </div>
+    <div class="skill-card reveal" style="--accent-color: var(--coral)">
+      <div class="skill-card-icon">👁️</div>
+      <div class="skill-card-title">Computer Vision</div>
+      <p style="color:var(--muted);font-size:0.85rem">Segmentation, object detection, image registration, Grad-CAM explainability</p>
+      <div class="skill-tags">
+        <span class="skill-tag">U-Net</span>
+        <span class="skill-tag">ResNet</span>
+        <span class="skill-tag">Segmentation</span>
+        <span class="skill-tag">Detection</span>
+        <span class="skill-tag">Grad-CAM</span>
+      </div>
+    </div>
+    <div class="skill-card reveal" style="--accent-color: var(--lime)">
+      <div class="skill-card-icon">⚙️</div>
+      <div class="skill-card-title">Software Engineering</div>
+      <p style="color:var(--muted);font-size:0.85rem">Production pipelines, embedded systems, API development, telemetry engineering</p>
+      <div class="skill-tags">
+        <span class="skill-tag">Python</span>
+        <span class="skill-tag">C/C++</span>
+        <span class="skill-tag">SQL</span>
+        <span class="skill-tag">Django</span>
+        <span class="skill-tag">Airflow</span>
+        <span class="skill-tag">MATLAB</span>
+      </div>
+    </div>
+    <div class="skill-card reveal" style="--accent-color: var(--gold)">
+      <div class="skill-card-icon">📊</div>
+      <div class="skill-card-title">Data & Visualization</div>
+      <p style="color:var(--muted);font-size:0.85rem">Statistical analysis, data pipelines, FID/KID metrics, clinical evaluation</p>
+      <div class="skill-tags">
+        <span class="skill-tag">NumPy</span>
+        <span class="skill-tag">Pandas</span>
+        <span class="skill-tag">Matplotlib</span>
+        <span class="skill-tag">Seaborn</span>
+      </div>
+    </div>
+    <div class="skill-card reveal" style="--accent-color: var(--violet)">
+      <div class="skill-card-icon">🤖</div>
+      <div class="skill-card-title">LLM Systems</div>
+      <p style="color:var(--muted);font-size:0.85rem">Multi-agent architectures, RAG pipelines, clinical reasoning, knowledge graphs</p>
+      <div class="skill-tags">
+        <span class="skill-tag">DSPy</span>
+        <span class="skill-tag">RAG</span>
+        <span class="skill-tag">LangChain</span>
+        <span class="skill-tag">Bixby</span>
+        <span class="skill-tag">KGs</span>
+      </div>
+    </div>
+    <div class="skill-card reveal" style="--accent-color: var(--cyan)">
+      <div class="skill-card-icon">🏭</div>
+      <div class="skill-card-title">Data & Production Engineering</div>
+      <p style="color:var(--muted);font-size:0.85rem">End-to-end ML pipelines, multi-modal data processing, model validation & benchmarking</p>
+      <div class="skill-tags">
+        <span class="skill-tag">Apache Airflow</span>
+        <span class="skill-tag">Django</span>
+        <span class="skill-tag">NumPy</span>
+        <span class="skill-tag">Pandas</span>
+        <span class="skill-tag">Multi-modal</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <p class="section-label reveal">// Work History</p>
+  <h2 class="section-title reveal">Experience</h2>
+  <div class="timeline">
+    <div class="timeline-item reveal">
+      <div class="timeline-dot" style="background:var(--lime);box-shadow:0 0 12px var(--lime)"></div>
+      <div class="timeline-date">Aug 2025 – May 2026</div>
+      <div class="timeline-role">MSE, Biomedical Engineering · GPA 4.0/4.0</div>
+      <div class="timeline-company">Johns Hopkins University · Baltimore, MD</div>
+      <ul class="timeline-bullets">
+        <li>Coursework: Machine Learning, Deep Learning, Computer Vision.</li>
+        <li>Research focus: applying computer vision and modern ML to 3D MRI and volumetric clinical data.</li>
+      </ul>
+    </div>
+    <div class="timeline-item reveal">
+      <div class="timeline-dot" style="background:var(--cyan);box-shadow:0 0 12px var(--cyan)"></div>
+      <div class="timeline-date">Nov 2025 – Present</div>
+      <div class="timeline-role">Graduate Researcher</div>
+      <div class="timeline-company">Image Analysis & Communications Lab (IACL) · Prof. Jerry L. Prince · Johns Hopkins University</div>
+      <ul class="timeline-bullets">
+        <li>[ Describe your research focus — e.g. brain MRI segmentation, cortical surface reconstruction, etc. ]</li>
+        <li>[ Add a second bullet about tools/methods used or outcomes. ]</li>
+      </ul>
+    </div>
+    <div class="timeline-item reveal">
+      <div class="timeline-dot" style="background:var(--cyan);box-shadow:0 0 12px var(--cyan)"></div>
+      <div class="timeline-date">Aug 2022 – Jul 2025</div>
+      <div class="timeline-role">Senior Software Engineer</div>
+      <div class="timeline-company">Samsung Research · Bengaluru, India</div>
+      <ul class="timeline-bullets">
+        <li>Engineered time-series telemetry pipelines using Apache Airflow, reducing debugging latency by 40%.</li>
+        <li>Optimized and deployed production-grade diagnostic algorithms to Samsung Galaxy flagship devices under strict battery & memory constraints.</li>
+        <li>Built an automated troubleshooting system using RAG and Django, cutting manual engineering labor by 30%.</li>
+        <li>Co-inventor on three A1-grade patents for next-gen modem features.</li>
+      </ul>
+    </div>
+    <div class="timeline-item reveal">
+      <div class="timeline-dot" style="background:var(--violet);box-shadow:0 0 12px var(--violet)"></div>
+      <div class="timeline-date">Jan 2022 – Jul 2022</div>
+      <div class="timeline-role">Machine Learning Intern</div>
+      <div class="timeline-company">Samsung Research · Bengaluru, India</div>
+      <ul class="timeline-bullets">
+        <li>Researched and implemented Knowledge Graph modules for Bixby Voice Assistant to enhance semantic understanding.</li>
+        <li>Prototyped and validated algorithmic approaches shaping the roadmap for next-gen voice intelligence.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <p class="section-label reveal">// Selected Work</p>
+  <h2 class="section-title reveal">Projects</h2>
+  <div class="projects-grid">
+    <div class="project-card reveal">
+      <div class="project-emoji">🧠</div>
+      <div class="project-title">Brain MRI Analysis & Segmentation</div>
+      <p class="project-desc">Custom U-Net architectures for volumetric brain MRI segmentation with rigid, affine & deformable image registration. Systematic class-level failure analysis using Dice metrics for clinical robustness.</p>
+      <div class="project-stack">
+        <span class="stack-tag">PyTorch</span>
+        <span class="stack-tag">U-Net</span>
+        <span class="stack-tag">DICOM</span>
+        <span class="stack-tag">SimpleITK</span>
+        <span class="stack-tag">3D Volumes</span>
+      </div>
+      <a href="#" class="project-link">View Repo →</a>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-emoji">👁️</div>
+      <div class="project-title">Retinal Vessel Analysis for Stroke & Hypertension</div>
+      <p class="project-desc">Fundus image segmentation pipeline with unconditional diffusion models for synthetic data generation. Evaluated using FID & KID to address dataset scarcity in clinical settings.</p>
+      <div class="project-stack">
+        <span class="stack-tag">Diffusion Models</span>
+        <span class="stack-tag">Segmentation</span>
+        <span class="stack-tag">FID/KID</span>
+        <span class="stack-tag">PyTorch</span>
+      </div>
+      <a href="#" class="project-link">View Repo →</a>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-emoji">🏥</div>
+      <div class="project-title">InteleHealth: Multi-Agent LLM System</div>
+      <p class="project-desc">Multi-agent clinical reasoning system using DSPy and RAG pipelines to automate history-taking with safe, logical patient interaction workflows.</p>
+      <div class="project-stack">
+        <span class="stack-tag">DSPy</span>
+        <span class="stack-tag">RAG</span>
+        <span class="stack-tag">Multi-Agent</span>
+        <span class="stack-tag">LLM Alignment</span>
+      </div>
+      <a href="#" class="project-link">View Repo →</a>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-emoji">🔍</div>
+      <div class="project-title">Diabetic Retinopathy Detection</div>
+      <p class="project-desc">ResNet-50 classifier with Grad-CAM visualization for clinical explainability. Cross-domain robustness testing across APTOS and ODIR-5K datasets to mirror real-world deployment.</p>
+      <div class="project-stack">
+        <span class="stack-tag">ResNet-50</span>
+        <span class="stack-tag">Grad-CAM</span>
+        <span class="stack-tag">Transfer Learning</span>
+        <span class="stack-tag">PyTorch</span>
+      </div>
+      <a href="#" class="project-link">View Repo →</a>
+    </div>
+  </div>
+</section>
+
+<!-- PATENTS & RECOGNITION -->
+<section id="patents">
+  <p class="section-label reveal">// Achievements</p>
+  <h2 class="section-title reveal">Recognition & Patents</h2>
+
+  <div class="award-banner reveal">
+    <div class="award-icon">🏆</div>
+    <div class="award-text">
+      <h3>Samsung Research Annual Award</h3>
+      <p>Recognized for exceptional contributions to software reliability and system performance across Samsung Galaxy flagship devices.</p>
+    </div>
+  </div>
+
+  <div class="patents-grid">
+    <div class="patent-card reveal">
+      <span class="patent-badge">A1-GRADE PATENT · 01</span>
+      <div class="patent-title">Next-Gen Modem Feature Innovation</div>
+      <p class="patent-desc">Co-inventor on a first of three A1-grade patents relating to advanced modem features developed at Samsung Research.</p>
+    </div>
+    <div class="patent-card reveal">
+      <span class="patent-badge">A1-GRADE PATENT · 02</span>
+      <div class="patent-title">Next-Gen Modem Feature Innovation</div>
+      <p class="patent-desc">Co-inventor on the second patent in the series, advancing modem capabilities for next-generation mobile devices.</p>
+    </div>
+    <div class="patent-card reveal">
+      <span class="patent-badge">A1-GRADE PATENT · 03</span>
+      <div class="patent-title">Next-Gen Modem Feature Innovation</div>
+      <p class="patent-desc">Co-inventor on a third A1-grade patent, completing a trio of high-impact inventions in modem intelligence.</p>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education" style="background: var(--bg);">
+  <p class="section-label reveal">// Academic Background</p>
+  <h2 class="section-title reveal">Education</h2>
+  <div class="projects-grid">
+    <div class="project-card reveal" style="border-color: rgba(170,255,92,0.2);">
+      <div class="project-emoji">🎓</div>
+      <div class="project-title">MSE — Biomedical Engineering</div>
+      <p class="project-desc" style="margin-bottom:0.6rem">Johns Hopkins University · Baltimore, MD</p>
+      <p class="project-desc"><strong style="color:var(--lime)">GPA: 4.0 / 4.0</strong> · Aug 2025 – May 2026</p>
+      <div class="project-stack">
+        <span class="stack-tag">Machine Learning</span>
+        <span class="stack-tag">Deep Learning</span>
+        <span class="stack-tag">Computer Vision</span>
+      </div>
+    </div>
+    <div class="project-card reveal" style="border-color: rgba(255,107,107,0.2);">
+      <div class="project-emoji">🚀</div>
+      <div class="project-title">B.Tech — Aerospace Engineering</div>
+      <p class="project-desc" style="margin-bottom:0.6rem">Indian Institute of Technology Madras (IITM) · Chennai, India</p>
+      <p class="project-desc"><strong style="color:var(--coral)">Aug 2018 – May 2022</strong></p>
+      <div class="project-stack">
+        <span class="stack-tag">IIT Madras</span>
+        <span class="stack-tag">Aerospace Engineering</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <p class="section-label reveal" style="text-align:center">// Let's Talk</p>
+    <h2 class="section-title reveal" style="text-align:center">Get In Touch</h2>
+    <p class="reveal" style="color:var(--muted);font-size:0.95rem;line-height:1.8">
+      Open to roles in <strong style="color:var(--text)">ML/DL Research, Medical Imaging, Computer Vision, Software Engineering, and AI/ML Engineering</strong>. Also writing about AI & Medicine on Medium — stay tuned.
+    </p>
+    <div class="contact-links reveal">
+      <a href="mailto:sbsanjukta2000@gmail.com" class="contact-link">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        Email
+      </a>
+      <a href="https://linkedin.com/in/sanjukta-bs" target="_blank" class="contact-link">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        LinkedIn
+      </a>
+      <a href="https://github.com/SanjuktaK" target="_blank" class="contact-link">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        GitHub
+      </a>
+      <a href="#" class="contact-link">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z"/></svg>
+        Medium
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Built with ♥ by Sanjukta Biswas · Johns Hopkins BME · 2025</p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
